@@ -11,11 +11,11 @@ class ElasticSearch implements ServiceInterface
     private ?Client $client=null;
 
     public function __construct(
-        private $MINIMALISM_SERVICE_ELASTICSEARCH_HOST='localhost',
-        private $MINIMALISM_SERVICE_ELASTICSEARCH_PORT=9200,
-        private $MINIMALISM_SERVICE_ELASTICSEARCH_SCHEME='http',
-        private $MINIMALISM_SERVICE_ELASTICSEARCH_USER=null,
-        private $MINIMALISM_SERVICE_ELASTICSEARCH_PASS=null,
+        private string $MINIMALISM_SERVICE_ELASTICSEARCH_HOST='localhost',
+        private int $MINIMALISM_SERVICE_ELASTICSEARCH_PORT=9200,
+        private string $MINIMALISM_SERVICE_ELASTICSEARCH_SCHEME='http',
+        private ?string $MINIMALISM_SERVICE_ELASTICSEARCH_USER=null,
+        private ?string $MINIMALISM_SERVICE_ELASTICSEARCH_PASS=null,
     )
     {
     }
@@ -42,11 +42,11 @@ class ElasticSearch implements ServiceInterface
                 }
                 $host = [
                     $this->MINIMALISM_SERVICE_ELASTICSEARCH_SCHEME
-                        . '://'
-                        . $usernamePassword
-                        . $this->MINIMALISM_SERVICE_ELASTICSEARCH_HOST
-                        . ':'
-                        . $this->MINIMALISM_SERVICE_ELASTICSEARCH_PORT
+                    . '://'
+                    . $usernamePassword
+                    . $this->MINIMALISM_SERVICE_ELASTICSEARCH_HOST
+                    . ':'
+                    . $this->MINIMALISM_SERVICE_ELASTICSEARCH_PORT
                 ];
 
                 $builder->setHosts($host);
@@ -56,6 +56,24 @@ class ElasticSearch implements ServiceInterface
         }
 
         return $this->client;
+    }
+
+    /**
+     * @param string $index
+     * @param int $id
+     * @return bool
+     */
+    public function exists(
+        string $index,
+        int $id,
+    ): bool
+    {
+        $params = [
+            'index' => $index,
+            'id' => $id
+        ];
+
+        return $this->getClient()->exists($params);
     }
 
     /**
@@ -73,21 +91,25 @@ class ElasticSearch implements ServiceInterface
         $params = [
             'index' => $index,
             'id' => $id,
-            'data' => $data
+            'body' => $data
         ];
 
-        return $this->getClient()->index($params);
+        if (!$this->exists($index, $id)){
+            return $this->getClient()->index($params);
+        }
+
+        return $this->getClient()->update($params);
     }
 
     /**
      * @param string $index
-     * @param string $field
+     * @param array $fields
      * @param string $term
      * @return array
      */
     public function search(
         string $index,
-        string $field,
+        array $fields,
         string $term,
     ): array
     {
@@ -95,8 +117,9 @@ class ElasticSearch implements ServiceInterface
             'index' => $index,
             'body' => [
                 'query' => [
-                    'match' => [
-                        $field => $term
+                    'multi_match' => [
+                        'query' => $term,
+                        'fields' => $fields
                     ]
                 ]
             ]
@@ -107,19 +130,19 @@ class ElasticSearch implements ServiceInterface
 
     /**
      * @param string $index
-     * @param string $field
+     * @param array $fields
      * @param string $term
      * @return array
      */
     public function simpleSearch(
         string $index,
-        string $field,
+        array $fields,
         string $term,
     ): array
     {
         $searchResults = $this->search(
             index: $index,
-            field: $field,
+            fields: $fields,
             term: $term,
         );
 
