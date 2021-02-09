@@ -1,0 +1,29 @@
+{
+  "name": "carlonicora/minimalism-service-elasticsearch",
+  "description": "ElasticSearch service for minimalism",
+  "version": "1.0.0",
+  "homepage": "https://carlonicora.com",
+  "time": "2021-02-09",
+  "license": "MIT",
+  "type": "library",
+  "minimum-stability": "stable",
+  "authors": [
+    {
+      "name": "Carlo Nicora",
+      "email": "carlo@carlonicora.com",
+      "homepage": "http://carlonicora.com",
+      "role": "Developer"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "CarloNicora\\Minimalism\\Services\\ElasticSearch\\":"src/"
+    }
+  },
+  "require": {
+    "php": ">=8.0",
+    "ext-json": "*",
+    "carlonicora/minimalism": "~12.1",
+    "elasticsearch/elasticsearch": "7.11.x-dev"
+  }
+}
