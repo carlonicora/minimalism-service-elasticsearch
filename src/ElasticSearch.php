@@ -4,6 +4,7 @@ namespace CarloNicora\Minimalism\Services\ElasticSearch;
 use CarloNicora\Minimalism\Interfaces\ServiceInterface;
 use Elasticsearch\Client;
 use Elasticsearch\ClientBuilder;
+use Exception;
 
 class ElasticSearch implements ServiceInterface
 {
@@ -74,6 +75,20 @@ class ElasticSearch implements ServiceInterface
         ];
 
         return $this->getClient()->exists($params);
+    }
+
+    /**
+     * @param string $json
+     * @return array
+     * @throws Exception
+     */
+    public function bulk(
+        string $json,
+    ): array
+    {
+        $params = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
+
+        return $this->getClient()->bulk($params);
     }
 
     /**
