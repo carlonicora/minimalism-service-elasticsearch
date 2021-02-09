@@ -109,6 +109,10 @@ class ElasticSearch implements ServiceInterface
             return $this->getClient()->index($params);
         }
 
+        $params['body'] = [
+            'doc' => $params['body']
+        ];
+
         return $this->getClient()->update($params);
     }
 
