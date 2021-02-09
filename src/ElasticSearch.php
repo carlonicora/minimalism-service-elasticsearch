@@ -120,35 +120,31 @@ class ElasticSearch implements ServiceInterface
      * @param string $index
      * @param array $fields
      * @param string $term
+     * @param int $from
+     * @param int $size
      * @return array
      */
     public function search(
         string $index,
         array $fields,
         string $term,
+        int $from=0,
+        int $size=25,
     ): array
     {
-        $queries = [];
-
-        foreach ($fields ?? [] as $field){
-            $queries[] = [
-                'wildcard' => [
-                    $field => [
-                        'value' => '*' . $term . '*'
-                    ]
-                ]
-            ];
-        }
-
         $params = [
             'index' => $index,
             'body' => [
                 'query' => [
-                    'dis_max' => [
-                        'queries' => $queries
+                    'query_string' => [
+                        'query' => $term . '*',
+                        'fields' => $fields
                     ]
-                ]
-            ]
+                ],
+                '_source' => $fields
+            ],
+            'from' => $from,
+            'size' => $size
         ];
 
         return $this->getClient()->search($params);
@@ -158,18 +154,24 @@ class ElasticSearch implements ServiceInterface
      * @param string $index
      * @param array $fields
      * @param string $term
+     * @param int $from
+     * @param int $size
      * @return array
      */
     public function simpleSearch(
         string $index,
         array $fields,
         string $term,
+        int $from=0,
+        int $size=25,
     ): array
     {
         $searchResults = $this->search(
             index: $index,
             fields: $fields,
             term: $term,
+            from: $from,
+            size: $size,
         );
 
         $response = [];
