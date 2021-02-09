@@ -124,13 +124,24 @@ class ElasticSearch implements ServiceInterface
         string $term,
     ): array
     {
+        $queries = [];
+
+        foreach ($fields ?? [] as $field){
+            $queries[] = [
+                'wildcard' => [
+                    $field => [
+                        'value' => '*' . $term . '*'
+                    ]
+                ]
+            ];
+        }
+
         $params = [
             'index' => $index,
             'body' => [
                 'query' => [
-                    'multi_match' => [
-                        'query' => $term,
-                        'fields' => $fields
+                    'dis_max' => [
+                        'queries' => $queries
                     ]
                 ]
             ]
