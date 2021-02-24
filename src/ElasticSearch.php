@@ -132,16 +132,38 @@ class ElasticSearch implements ServiceInterface
         int $size=25,
     ): array
     {
+        $should = [];
+        foreach ($fields as $field){
+            $should [] = [
+                'match' => [
+                    $field => $term
+                ]
+            ];
+        }
+
+        foreach ($fields as $field){
+            $should [] = [
+                'match_phrase' => [
+                    $field => $term
+                ]
+            ];
+        }
+
+        $should [] = [
+            'query_string' => [
+                'query' => $term .'*',
+                'fields' => $fields
+            ]
+        ];
+
         $params = [
             'index' => $index,
             'body' => [
                 'query' => [
-                    'query_string' => [
-                        'query' => $term . '*',
-                        'fields' => $fields
+                    'bool' => [
+                        'should' => $should
                     ]
-                ],
-                '_source' => $fields
+                ]
             ],
             'from' => $from,
             'size' => $size
