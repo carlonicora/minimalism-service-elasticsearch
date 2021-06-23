@@ -1,9 +1,12 @@
-<?php
+<?php /** @noinspection PhpRedundantCatchClauseInspection */
+
 namespace CarloNicora\Minimalism\Services\ElasticSearch;
 
+use CarloNicora\Minimalism\Interfaces\LoggerInterface;
 use CarloNicora\Minimalism\Interfaces\ServiceInterface;
 use Elasticsearch\Client;
 use Elasticsearch\ClientBuilder;
+use Elasticsearch\Common\Exceptions\ElasticsearchException;
 
 class ElasticSearch implements ServiceInterface
 {
@@ -11,6 +14,7 @@ class ElasticSearch implements ServiceInterface
     private ?Client $client=null;
 
     public function __construct(
+        private LoggerInterface $logger,
         private string $MINIMALISM_SERVICE_ELASTICSEARCH_HOST='localhost',
         private int $MINIMALISM_SERVICE_ELASTICSEARCH_PORT=9200,
         private string $MINIMALISM_SERVICE_ELASTICSEARCH_SCHEME='http',
@@ -73,7 +77,25 @@ class ElasticSearch implements ServiceInterface
             'id' => $id
         ];
 
-        return $this->getClient()->exists($params);
+        try {
+            return $this->getClient()->exists($params);
+        } catch (ElasticsearchException $exception) {
+            $this->logger->error(
+                message: 'Failed to process an exists request',
+                domain: 'ElasticSearch',
+                context: [
+                    'params' => $params,
+                    'exception' => [
+                        'message' => $exception->getMessage(),
+                        'file' => $exception->getFile(),
+                        'line' => $exception->getLine(),
+                        'trace' => $exception->getTraceAsString()
+                    ]
+                ]
+            );
+        }
+
+        return false;
     }
 
     /**
@@ -84,7 +106,25 @@ class ElasticSearch implements ServiceInterface
         array $params,
     ): array
     {
-        return $this->getClient()->bulk($params);
+        try {
+            return $this->getClient()->bulk($params);
+        } catch (ElasticsearchException $exception) {
+            $this->logger->error(
+                message: 'Failed to process a bulk request',
+                domain: 'ElasticSearch',
+                context: [
+                    'params' => $params,
+                    'exception' => [
+                        'message' => $exception->getMessage(),
+                        'file' => $exception->getFile(),
+                        'line' => $exception->getLine(),
+                        'trace' => $exception->getTraceAsString()
+                    ]
+                ]
+            );
+        }
+
+        return [];
     }
 
     /**
@@ -113,7 +153,25 @@ class ElasticSearch implements ServiceInterface
             'doc' => $params['body']
         ];
 
-        return $this->getClient()->update($params);
+        try {
+            return $this->getClient()->update($params);
+        } catch (ElasticsearchException $exception) {
+            $this->logger->error(
+                message: 'Failed to process an update request',
+                domain: 'ElasticSearch',
+                context: [
+                    'params' => $params,
+                    'exception' => [
+                        'message' => $exception->getMessage(),
+                        'file' => $exception->getFile(),
+                        'line' => $exception->getLine(),
+                        'trace' => $exception->getTraceAsString()
+                    ]
+                ]
+            );
+        }
+
+        return [];
     }
 
     /**
@@ -169,7 +227,25 @@ class ElasticSearch implements ServiceInterface
             'size' => $size
         ];
 
-        return $this->getClient()->search($params);
+        try {
+            return $this->getClient()->search($params);
+        } catch (ElasticsearchException $exception) {
+            $this->logger->error(
+                message: 'Failed to process a search request',
+                domain: 'ElasticSearch',
+                context: [
+                    'params' => $params,
+                    'exception' => [
+                        'message' => $exception->getMessage(),
+                        'file' => $exception->getFile(),
+                        'line' => $exception->getLine(),
+                        'trace' => $exception->getTraceAsString()
+                    ]
+                ]
+            );
+        }
+
+        return [];
     }
 
     /**
