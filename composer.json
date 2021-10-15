@@ -1,12 +1,12 @@
 {
   "name": "carlonicora/minimalism-service-elasticsearch",
   "description": "ElasticSearch service for minimalism",
-  "version": "1.0.9",
+  "version": "1.0.10-beta1",
   "homepage": "https://carlonicora.com",
   "time": "2021-02-09",
   "license": "MIT",
   "type": "library",
-  "minimum-stability": "stable",
+  "minimum-stability": "beta",
   "authors": [
     {
       "name": "Carlo Nicora",
@@ -23,7 +23,7 @@
   "require": {
     "php": ">=8.0",
     "ext-json": "*",
-    "carlonicora/minimalism": "~12.1",
+    "carlonicora/minimalism": "~13.0",
     "elasticsearch/elasticsearch": "~7.11"
   }
 }
