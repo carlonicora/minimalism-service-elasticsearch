@@ -2,13 +2,13 @@
 
 namespace CarloNicora\Minimalism\Services\ElasticSearch;
 
+use CarloNicora\Minimalism\Abstracts\AbstractService;
 use CarloNicora\Minimalism\Interfaces\LoggerInterface;
-use CarloNicora\Minimalism\Interfaces\ServiceInterface;
 use Elasticsearch\Client;
 use Elasticsearch\ClientBuilder;
 use Elasticsearch\Common\Exceptions\ElasticsearchException;
 
-class ElasticSearch implements ServiceInterface
+class ElasticSearch extends AbstractService
 {
     /** @var Client|null  */
     private ?Client $client=null;
@@ -22,6 +22,7 @@ class ElasticSearch implements ServiceInterface
         private ?string $MINIMALISM_SERVICE_ELASTICSEARCH_PASS=null,
     )
     {
+        parent::__construct();
     }
 
     /**
