@@ -22,7 +22,6 @@ class ElasticSearch extends AbstractService
         private ?string $MINIMALISM_SERVICE_ELASTICSEARCH_PASS=null,
     )
     {
-        parent::__construct();
     }
 
     /**
@@ -282,18 +281,4 @@ class ElasticSearch extends AbstractService
         return $response;
     }
 
-    /**
-     *
-     */
-    public function initialise(): void
-    {
-    }
-
-    /**
-     *
-     */
-    public function destroy(): void
-    {
-        $this->client = null;
-    }
 }
