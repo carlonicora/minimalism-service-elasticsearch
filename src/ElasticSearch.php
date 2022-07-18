@@ -113,7 +113,7 @@ class ElasticSearch extends AbstractService
                 message: 'Failed to process a bulk request',
                 domain: 'ElasticSearch',
                 context: [
-                    'params' => $params,
+                    'params' => ['first_10_param' => empty($params) ? 'an empty array' : array_slice(array: $params, offset: 10)],
                     'exception' => [
                         'message' => $exception->getMessage(),
                         'file' => $exception->getFile(),
