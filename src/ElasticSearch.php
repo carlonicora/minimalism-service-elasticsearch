@@ -176,6 +176,24 @@ class ElasticSearch extends AbstractService
 
     /**
      * @param string $index
+     * @param int $id
+     * @return array
+     */
+    public function delete(
+        string $index,
+        int $id
+    ): array
+    {
+        $params = [
+            'index' => $index,
+            'id' => $id
+        ];
+
+        return $this->getClient()->delete($params);
+    }
+
+    /**
+     * @param string $index
      * @param array $fields
      * @param string $term
      * @param int $from
