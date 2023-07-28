@@ -19,3 +19,4 @@ networks:
   default_network:
     driver: bridge
     name: carlonicora
+    external: true
